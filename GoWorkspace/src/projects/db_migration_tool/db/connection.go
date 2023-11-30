@@ -14,6 +14,7 @@ func ConnectToDB(user, password, dbname string) (*sql.DB, error) {
 	if err != nil {
 		log.Printf("Error opening database: %v", err)
 	}
+
 	err = db.Ping()
 	if err != nil {
 		log.Printf("Error connecting to database: %v", err)
@@ -21,4 +22,20 @@ func ConnectToDB(user, password, dbname string) (*sql.DB, error) {
 	}
 	log.Println("Successfully connected to the databse")
 	return db, nil
+}
+
+func ApplyMigration(db *sql.DB, upCommands string) error {
+	_, err := db.Exec(upCommands)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func RollbackMigration(db *sql.DB, downCommands string) error {
+	_, err := db.Exec(downCommands)
+	if err != nil {
+		return err
+	}
+	return nil
 }
