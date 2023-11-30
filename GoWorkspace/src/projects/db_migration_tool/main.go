@@ -35,15 +35,31 @@ func main() {
 
 	// Apply migration
 	if *migrationFileName != "" {
-		upCommands, _, err := readMigrationFiles(*migrationFileName)
+		// Check if migration is already applied
+		alreadyApplied, err := db.CheckMigrationApplied(dbConn, *migrationFileName)
 		if err != nil {
-			log.Fatalf("Error reading migration file: %v", err)
+			log.Fatalf("Error checking if migration is applied: %v", err)
 		}
-		err = db.ApplyMigration(dbConn, upCommands)
-		if err != nil {
-			log.Fatalf("Error applying migration: %v", err)
+		if alreadyApplied {
+			log.Printf("Migration %s has already been applied", *migrationFileName)
+		} else {
+			// Apply the migration
+			upCommands, _, err := readMigrationFiles(*migrationFileName)
+			if err != nil {
+				log.Fatalf("Error reading migration file: %v", err)
+			}
+			err = db.ApplyMigration(dbConn, upCommands)
+			if err != nil {
+				log.Fatalf("Error applying migration: %v", err)
+			}
+			log.Println("Migration applied successfully")
+
+			// Record the migration
+			err = db.RecordMigration(dbConn, *migrationFileName)
+			if err != nil {
+				log.Fatalf("Error recording migration: %v", err)
+			}
 		}
-		log.Println("Migration applied successfully")
 	}
 
 	// Rollback migration
@@ -57,6 +73,12 @@ func main() {
 			log.Fatalf("Error rolling back migration: %v", err)
 		}
 		log.Println("Migration rolled back successfully")
+
+		// Remove the migration record
+		err = db.RemoveMigrationRecord(dbConn, *rollbackFileName)
+		if err != nil {
+			log.Fatalf("Error removing migration record: %v", err)
+		}
 	}
 
 	// Example for creating a migration file
@@ -65,7 +87,6 @@ func main() {
 	log.Println("Migration file creation process completed.")
 }
 
-// EnsureMigrationDir checks and creates the migrations directory if it does not exist
 func EnsureMigrationDir(dirName string) {
 	if _, err := os.Stat(dirName); os.IsNotExist(err) {
 		err := os.Mkdir(dirName, 0755)
@@ -76,16 +97,15 @@ func EnsureMigrationDir(dirName string) {
 	}
 }
 
-// CreateMigrationFile creates a new migration file with a specified name
 func CreateMigrationFile(migrationName string) {
 	timestamp := time.Now().Format("20060102150405")
 	fileName := fmt.Sprintf("%s_%s.sql", timestamp, migrationName)
 
 	content := `-- UP
--- SQL statements for applying the migration go here
+CREATE TABLE IF NOT EXISTS example_table (id SERIAL PRIMARY KEY, name VARCHAR(255));
 
 -- DOWN
--- SQL statements for rolling back the migration go here
+DROP TABLE IF EXISTS example_table;
 `
 	f, err := os.Create("migrations/" + fileName)
 	if err != nil {
@@ -100,7 +120,6 @@ func CreateMigrationFile(migrationName string) {
 	log.Printf("Created migration file: %s", fileName)
 }
 
-// readMigrationFiles reads a migration file and separates it into up and down sections
 func readMigrationFiles(fileName string) (string, string, error) {
 	file, err := os.Open("migrations/" + fileName)
 	if err != nil {

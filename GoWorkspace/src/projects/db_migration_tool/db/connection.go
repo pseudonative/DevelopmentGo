@@ -39,3 +39,19 @@ func RollbackMigration(db *sql.DB, downCommands string) error {
 	}
 	return nil
 }
+
+func RecordMigration(db *sql.DB, migrationName string) error {
+	_, err := db.Exec("INSERT INTO applied_migrations (name, applied_at) VALUES ($1, NOW())", migrationName)
+	return err
+}
+
+func RemoveMigrationRecord(db *sql.DB, migrationName string) error {
+	_, err := db.Exec("DELETE FROM applied_migrations WHERE name = $1", migrationName)
+	return err
+}
+
+func CheckMigrationApplied(db *sql.DB, migrationName string) (bool, error) {
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM applied_migrations WHERE name = $1", migrationName).Scan(&count)
+	return count > 0, err
+}
