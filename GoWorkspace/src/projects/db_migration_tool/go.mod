@@ -1,5 +1,3 @@
-module db_migrate
+module github.com/pseudonative/DevelopmentGo/GoWorkspace/src/projects/db_migration_tool
 
 go 1.21.4
-
-require github.com/lib/pq v1.10.9 // indirect
