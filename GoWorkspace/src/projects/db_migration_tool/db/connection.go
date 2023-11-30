@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+
+	_ "github.com/lib/pq"
 )
 
 func ConnectToDB(user, password, dbname string) (*sql.DB, error) {
@@ -15,7 +17,8 @@ func ConnectToDB(user, password, dbname string) (*sql.DB, error) {
 	err = db.Ping()
 	if err != nil {
 		log.Printf("Error connecting to database: %v", err)
+		return nil, err
 	}
-	log.Println("Successfully connected to the databsed")
+	log.Println("Successfully connected to the databse")
 	return db, nil
 }
