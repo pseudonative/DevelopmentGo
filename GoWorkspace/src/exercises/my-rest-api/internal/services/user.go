@@ -11,6 +11,6 @@ type UserService struct {
 	Repo *repository.UserRepository
 }
 
-func (us *UserService) GetUser(ctx context.Context, id int) (*models.User, error) {
-	return us.Repo.GetUserByID(ctx, id)
+func (s *UserService) CreateUser(ctx context.Context, user models.User) (int, error) {
+	return s.Repo.CreateUser(ctx, user)
 }

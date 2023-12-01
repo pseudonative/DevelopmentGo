@@ -11,6 +11,12 @@ type UserRepository struct {
 	DB *sql.DB
 }
 
-func (ur *UserRepository) GetUserByID(ctx context.Context, id int) (*models.User, error) {
-	return nil, nil
+func (r *UserRepository) CreateUser(ctx context.Context, user models.User) (int, error) {
+	query := `INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id`
+	var id int
+	err := r.DB.QueryRowContext(ctx, query, user.Name, user.Email).Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
 }
