@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -12,10 +13,27 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("postgres", "postres")
+	const (
+		host     = "localhost"
+		port     = 5432
+		user     = "postgres"
+		password = "mysecretpassword"
+		dbname   = "postgres"
+	)
+
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+
+	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		log.Fatal("Could not connect to databvase:", err)
 	}
+	defer db.Close()
+
+	if err = db.Ping(); err != nil {
+		log.Fatal("Error pinging the database: ", err)
+	}
+
 	userRepo := &repository.UserRepository{DB: db}
 	userService := &services.UserService{Repo: userRepo}
 	userHandler := &handlers.UserHandler{UserService: userService}
