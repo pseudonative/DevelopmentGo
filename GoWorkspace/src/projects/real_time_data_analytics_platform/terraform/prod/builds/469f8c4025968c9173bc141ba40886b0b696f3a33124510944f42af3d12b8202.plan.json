@@ -1,1 +1,0 @@
-{"filename": "builds/469f8c4025968c9173bc141ba40886b0b696f3a33124510944f42af3d12b8202.zip", "runtime": "go1.x", "artifacts_dir": "builds", "build_plan": [["zip", "../../lambda", null]]}
