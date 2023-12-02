@@ -16,7 +16,7 @@ module "s3_static_bucket" {
   providers = {
     aws = aws.produseast1
   }
-  bucket_acl = "private"
+  bucket_acl  = "private"
   bucket_name = "prod-data"
 }
 
@@ -25,7 +25,7 @@ module "lambda_function" {
   providers = {
     aws = aws.produseast1
   }
-  s3_bucket = module.s3_static_bucket.s3_bucket_id
+  s3_bucket      = module.s3_static_bucket.s3_bucket_id
   aws_account_id = data.aws_caller_identity.current.account_id
-  region     = "us-east-1"
+  region         = "us-east-1"
 }

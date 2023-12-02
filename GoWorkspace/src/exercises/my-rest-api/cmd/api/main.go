@@ -39,7 +39,23 @@ func main() {
 	userHandler := &handlers.UserHandler{UserService: userService}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/user", userHandler.CreateUser)
+
+	mux.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodPost:
+			userHandler.CreateUser(w, r)
+		case http.MethodGet:
+			userHandler.GetAllUsers(w, r)
+		case http.MethodPut:
+			userHandler.UpdateUser(w, r)
+		case http.MethodDelete:
+			userHandler.DeleteUser(w, r)
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
+
+	mux.HandleFunc("/user", userHandler.GetUser)
 
 	log.Println("Starting server on :8080")
 	if err := http.ListenAndServe(":8080", mux); err != nil {
