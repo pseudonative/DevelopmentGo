@@ -27,4 +27,4 @@ terraform.rc
 .vscode/
 backend_webserver
 main
-
+.env
