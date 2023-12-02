@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"net/http"
@@ -9,15 +11,29 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+type PageInfo struct {
+	Title string
+}
+
 func main() {
-	url := "https://www.warmvalleyhc.com/"
+	var url string
+	flag.StringVar(&url, "url", "https://www.warmvalleyhc.com", "URL to scrape")
+	flag.Parse()
+
 	content, err := fetchURL(url)
 	if err != nil {
 		fmt.Println("Error fetching URL: ", err)
 		return
 	}
-	// fmt.Println(content)
-	parseHTML(content)
+
+	pageInfo := parseHTML(content)
+	jsonData, err := json.MarshalIndent(pageInfo, "", " ")
+	if err != nil {
+		fmt.Println("Error marshalling to JSON: ", err)
+		return
+	}
+	fmt.Println(string(jsonData))
+
 }
 
 func fetchURL(url string) (string, error) {
@@ -34,14 +50,21 @@ func fetchURL(url string) (string, error) {
 	return string(body), nil
 }
 
-func parseHTML(htmlContent string) {
+func parseHTML(htmlContent string) PageInfo {
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(htmlContent))
 	if err != nil {
 		fmt.Println("Error creating document: ", err)
-		return
+		return PageInfo{}
 	}
+
+	pageInfo := PageInfo{}
+
+	title := doc.Find("title").First().Text()
+	pageInfo.Title = title
+
 	doc.Find("title").Each(func(index int, item *goquery.Selection) {
 		title := item.Text()
 		fmt.Printf("Title %d: %s\n", index+1, title)
 	})
+	return pageInfo
 }
