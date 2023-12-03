@@ -26,13 +26,13 @@ func main() {
 	}
 
 	dbURL := os.Getenv("DB_URL")
-	if portString == "" {
+	if dbURL == "" {
 		log.Fatal("DB_URL is not found in the environment")
 	}
 
-	conn, err := sql.Open("postgress", dbURL)
+	conn, err := sql.Open("postgres", dbURL)
 	if err != nil {
-		log.Fatal("Can't connect to DB")
+		log.Fatal("Can't connect to DB", err)
 	}
 
 	apiCfg := apiConfig{
@@ -54,6 +54,7 @@ func main() {
 	v1Router.Get("/healthz", handlerReadiness)
 	v1Router.Get("/err", handlerErr)
 	v1Router.Post("/users", apiCfg.handlerCreateUser)
+	v1Router.Get("/users", apiCfg.handlerGetUser)
 
 	router.Mount("/v1", v1Router)
 
