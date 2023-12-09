@@ -10,7 +10,7 @@ import (
 )
 
 func TestSegment(t *testing.T) {
-	dir, _ := os.CreateTemp("", "store_append_test")
+	dir, _ := os.MkdirTemp("", "store_append_test")
 	defer os.RemoveAll(dir)
 
 	want := &api.Record{Value: []byte("hello world")}

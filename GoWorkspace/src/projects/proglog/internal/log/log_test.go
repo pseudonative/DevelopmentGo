@@ -21,7 +21,7 @@ func TestLog(t *testing.T) {
 		"truncate":                          testTruncate,
 	} {
 		t.Run(scenario, func(t *testing.T) {
-			dir, err := os.CreateTemp("", "store-test")
+			dir, err := os.MkdirTemp("", "store-test")
 			require.NoError(t, err)
 			defer os.RemoveAll(dir)
 
@@ -69,7 +69,7 @@ func testInitExisting(t *testing.T, o *Log) {
 	require.NoError(t, err)
 	require.Equal(t, uint64(2), off)
 
-	n, err = NewLog(o.Dir, o.Config)
+	n, err := NewLog(o.Dir, o.Config)
 	require.NoError(t, err)
 
 	off, err = n.LowestOffset()

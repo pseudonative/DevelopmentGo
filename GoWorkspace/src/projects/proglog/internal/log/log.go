@@ -55,7 +55,7 @@ func (l *Log) setup() error {
 		if err = l.newSegment(baseOffsets[i]); err != nil {
 			return err
 		}
-		l++
+		i++
 	}
 	if l.segments == nil {
 		if err = l.newSegment(
