@@ -22,7 +22,7 @@ func TestStoreAppendRead(t *testing.T) {
 
 	testAppend(t, s)
 	testRead(t, s)
-	testRead(t, s)
+	testReadAt(t, s)
 
 	s, err = newStore(f)
 	require.NoError(t, err)
