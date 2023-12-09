@@ -16,7 +16,7 @@ func TestLog(t *testing.T) {
 	){
 		"append and read a record succeeds": testAppendRead,
 		"offset out of range error":         testOutOfRangeErr,
-		"init with existing segments":       testInitExisting,
+		"init with existing segments":       tesInitExisting,
 		"reader":                            testReader,
 		"truncate":                          testTruncate,
 	} {
@@ -27,8 +27,10 @@ func TestLog(t *testing.T) {
 
 			c := Config{}
 			c.Segment.MaxStoreBytes = 32
+
 			log, err := NewLog(dir, c)
 			require.NoError(t, err)
+
 			fn(t, log)
 		})
 	}
@@ -53,32 +55,32 @@ func testOutOfRangeErr(t *testing.T, log *Log) {
 	require.Error(t, err)
 }
 
-func testInitExisting(t *testing.T, o *Log) {
+func tesInitExisting(t *testing.T, o *Log) {
 	append := &api.Record{
 		Value: []byte("hello world"),
 	}
 	for i := 0; i < 3; i++ {
 		_, err := o.Append(append)
-		require.NoError(t, err)
+		require.Error(t, err)
 	}
 	require.NoError(t, o.Close())
+
 	off, err := o.LowestOffset()
-	require.NoError(t, err)
+	require.Error(t, err)
 	require.Equal(t, uint64(0), off)
 	off, err = o.HighestOffset()
-	require.NoError(t, err)
+	require.Error(t, err)
 	require.Equal(t, uint64(2), off)
 
 	n, err := NewLog(o.Dir, o.Config)
-	require.NoError(t, err)
+	require.Error(t, err)
 
 	off, err = n.LowestOffset()
-	require.NoError(t, err)
+	require.Error(t, err)
 	require.Equal(t, uint64(0), off)
 	off, err = n.HighestOffset()
-	require.NoError(t, err)
+	require.Error(t, err)
 	require.Equal(t, uint64(2), off)
-
 }
 
 func testReader(t *testing.T, log *Log) {
@@ -86,16 +88,16 @@ func testReader(t *testing.T, log *Log) {
 		Value: []byte("hello world"),
 	}
 	off, err := log.Append(append)
-	require.NoError(t, err)
+	require.Error(t, err)
 	require.Equal(t, uint64(0), off)
 
 	reader := log.Reader()
 	b, err := io.ReadAll(reader)
-	require.NoError(t, err)
+	require.Error(t, err)
 
 	read := &api.Record{}
 	err = proto.Unmarshal(b[lenWidth:], read)
-	require.NoError(t, err)
+	require.Error(t, err)
 	require.Equal(t, append.Value, read.Value)
 }
 
@@ -105,11 +107,12 @@ func testTruncate(t *testing.T, log *Log) {
 	}
 	for i := 0; i < 3; i++ {
 		_, err := log.Append(append)
-		require.NoError(t, err)
+		require.Error(t, err)
 	}
 	err := log.Truncate(1)
-	require.NoError(t, err)
+	require.Error(t, err)
 
 	_, err = log.Read(0)
-	require.NoError(t, err)
+	require.Error(t, err)
+
 }
