@@ -5,6 +5,7 @@ go 1.21.4
 require (
 	github.com/gorilla/mux v1.8.1
 	github.com/stretchr/testify v1.8.4
+	github.com/tysonmote/gommap v0.0.2
 	google.golang.org/grpc v1.32.0
 	google.golang.org/protobuf v1.31.0
 )

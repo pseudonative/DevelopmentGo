@@ -36,4 +36,4 @@ type Record struct {
 	Offset uint64 `json:"offset"`
 }
 
-var ErrOffsetNotFound = fmt.Errorf("offset not founc")
+var ErrOffsetNotFound = fmt.Errorf("offset not found")
