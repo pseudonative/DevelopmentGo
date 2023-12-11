@@ -92,7 +92,7 @@ func openFile(name string) (file *os.File, size int64, err error) {
 	f, err := os.OpenFile(
 		name,
 		os.O_RDWR|os.O_CREATE|os.O_APPEND,
-		0644,
+		0777,
 	)
 	if err != nil {
 		return nil, 0, err
