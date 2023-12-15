@@ -45,7 +45,7 @@ func (c Config) RPCAddr() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("%x:%d", host, c.RPCPort), nil
+	return fmt.Sprintf("%s:%d", host, c.RPCPort), nil
 }
 
 func New(config Config) (*Agent, error) {
@@ -147,6 +147,7 @@ func (a *Agent) setupMembership() error {
 		Tags: map[string]string{
 			"rpc_addr": rpcAddr,
 		},
+		StartJoinAddrs: a.Config.StartJoinAddrs,
 	})
 	return err
 }
