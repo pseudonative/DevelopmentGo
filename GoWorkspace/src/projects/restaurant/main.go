@@ -5,7 +5,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/pseudonative/restaurant/database"
-	"github.com/pseudonative/restaurant/middleware"
 	"github.com/pseudonative/restaurant/routes"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -27,7 +26,7 @@ func main() {
 	routes.TableRoutes(router)
 	routes.OrderRoutes(router)
 	routes.OrderItemRoutes(router)
-	routes.InvoicesRoutes(router)
+	routes.InvoiceRoutes(router)
 
 	router.Run(":" + port)
 
