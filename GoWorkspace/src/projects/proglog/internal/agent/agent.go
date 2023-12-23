@@ -123,9 +123,9 @@ func (a *Agent) setupLog() error {
 		return err
 	}
 	if a.Config.Bootstrap {
-		err = a.log.WaitForLeader(3 * time.Second)
+		return a.log.WaitForLeader(3 * time.Second)
 	}
-	return err
+	return nil
 }
 
 func (a *Agent) setupServer() error {
@@ -134,8 +134,9 @@ func (a *Agent) setupServer() error {
 		a.Config.ACLPolicyFile,
 	)
 	serverConfig := &server.Config{
-		Commitlog:  a.log,
-		Authorizer: authorizer,
+		CommitLog:   a.log,
+		Authorizer:  authorizer,
+		GetServerer: a.log,
 	}
 	var opts []grpc.ServerOption
 	if a.Config.ServerTLSConfig != nil {
@@ -172,6 +173,14 @@ func (a *Agent) setupMembership() error {
 	return err
 }
 
+func (a *Agent) serve() error {
+	if err := a.mux.Serve(); err != nil {
+		_ = a.Shutdown()
+		return err
+	}
+	return nil
+}
+
 func (a *Agent) Shutdown() error {
 	a.shutdownLock.Lock()
 	defer a.shutdownLock.Unlock()
@@ -193,14 +202,6 @@ func (a *Agent) Shutdown() error {
 		if err := fn(); err != nil {
 			return err
 		}
-	}
-	return nil
-}
-
-func (a *Agent) serve() error {
-	if err := a.mux.Serve(); err != nil {
-		_ = a.Shutdown()
-		return err
 	}
 	return nil
 }

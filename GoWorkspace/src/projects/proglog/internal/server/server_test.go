@@ -136,7 +136,7 @@ func setupTest(t *testing.T, fn func(*Config)) (rootClient api.LogClient, nobody
 	}
 
 	cfg = &Config{
-		Commitlog:  clog,
+		CommitLog:  clog,
 		Authorizer: authorizer,
 	}
 
