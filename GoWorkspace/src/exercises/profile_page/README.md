@@ -1,0 +1,3 @@
+http://localhost:8080/login?username=yourname
+
+http://localhost:8080/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImplciIsImV4cCI6MTcwMzQ1NzU4NH0.99_RcpS0Wt531Dxlz2FkAnJh-vRtpFcufxt4n20394E
