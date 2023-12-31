@@ -50,25 +50,6 @@ func TestPickerConsumesFromFollowers(t *testing.T) {
 	}
 }
 
-//	func setupTest() (*loadbalance.Picker, []*subConn) {
-//		var subConns []*subConn
-//		buildInfo := base.PickerBuildInfo{
-//			ReadySCs: make(map[balancer.SubConn]base.SubConnInfo),
-//		}
-//		for i := 0; i < 3; i++ {
-//			sc := &subConn{}
-//			addr := resolver.Address{
-//				Attributes: attributes.New("is_leader", i == 0),
-//			}
-//			sc.UpdateAddresses([]resolver.Address{addr})
-//			buildInfo.ReadySCs[sc] = base.SubConnInfo{Address: addr}
-//			subConns = append(subConns, sc)
-//		}
-//		picker := &loadbalance.Picker{}
-//		picker.Build(buildInfo)
-//		return picker, subConns
-//	}
-
 type subConn struct {
 	isLeader bool
 }
@@ -89,16 +70,10 @@ func (s *subConn) GetOrBuildProducer(builder balancer.ProducerBuilder) (balancer
 }
 
 func setupTest() (*loadbalance.Picker, []balancer.SubConn) {
-	// Create a Picker
 	picker := &loadbalance.Picker{}
-
-	// Create a map of ready SubConns with SubConnInfo
 	readySCs := make(map[balancer.SubConn]base.SubConnInfo)
-
-	// Initialize SubConns slice
 	var subConns []balancer.SubConn
 
-	// Setup SubConns
 	for i := 0; i < 3; i++ {
 		sc := &subConn{isLeader: i == 0}
 		addr := resolver.Address{
@@ -109,7 +84,6 @@ func setupTest() (*loadbalance.Picker, []balancer.SubConn) {
 		subConns = append(subConns, sc)
 	}
 
-	// Simulate building the Picker with the ready SubConns
 	picker.Build(base.PickerBuildInfo{ReadySCs: readySCs})
 
 	return picker, subConns
