@@ -59,7 +59,6 @@ func TestResolver(t *testing.T) {
 	fmt.Printf("Parsed URL: %#v\n", targetURL)
 	_, err = r.Build(
 		resolver.Target{
-			// resolver.Endpoint: l.Addr().String(),
 			URL: *targetURL,
 		},
 		conn,
