@@ -44,7 +44,7 @@ func TokenAuthMiddleWare(next http.Handler) http.Handler {
 		_, isValid := ValidateToken(tokenString)
 
 		if !isValid {
-			http.Error(w, "Unauthorized - Please request a token: http://localhost:8080/login?username=yourname useToken: http://localhost:8080/?token= ", http.StatusUnauthorized)
+			http.Error(w, "Unauthorized - Please request a token: https://rezboy.org/login?username=yourname && useToken: http://rezboy.org/?token= ", http.StatusUnauthorized)
 			return
 		}
 		next.ServeHTTP(w, r)

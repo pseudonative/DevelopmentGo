@@ -2,11 +2,16 @@ apiVersion: v1
 kind: Service
 metadata:
   name: profile-service
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:520291287938:certificate/28d00ed4-1e46-429d-8c44-248cd324aa26"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "60"
 spec:
   selector:
     app: profile-app
   type: LoadBalancer
   ports:
     - protocol: TCP
-      port: 8080
+      port: 443
       targetPort: 8080

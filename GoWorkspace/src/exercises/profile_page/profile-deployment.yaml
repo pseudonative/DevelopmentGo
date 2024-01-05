@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: profile-app
-        image: 520291287938.dkr.ecr.us-east-1.amazonaws.com/profile:latest
+        image: 520291287938.dkr.ecr.us-east-1.amazonaws.com/profile:v1.0.2
         ports:
         - containerPort: 8080
