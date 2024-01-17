@@ -2,6 +2,7 @@ http://localhost:8080/login?username=yourname
 
 http://localhost:8080/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InlvdXJuYW1lIiwiZXhwIjoxNzA0NDMzNTgyfQ.9TTGofkg0F1ALs53EkEvA3rpBMDWBqAunk64l0RDesk
 
+aws eks update-kubeconfig --region us-east-1 --name dev-ops-profile
 
 aws ecr create-repository --repository-name profile
 

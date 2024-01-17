@@ -16,6 +16,24 @@ spec:
     spec:
       containers:
       - name: profile-app
-        image: 520291287938.dkr.ecr.us-east-1.amazonaws.com/profile:v1.0.2
+        image: 520291287938.dkr.ecr.us-east-1.amazonaws.com/devops-profile:latest
         ports:
         - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: profile-service
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:520291287938:certificate/28d00ed4-1e46-429d-8c44-248cd324aa26"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "60"
+spec:
+  selector:
+    app: profile-app
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 443
+      targetPort: 8080
