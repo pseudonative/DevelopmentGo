@@ -1,0 +1,43 @@
+name: Go CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.21
+
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Run tests
+      run: go test -v ./...
+
+    - name: Docker Login
+      uses: docker/login-action@v1
+      with:
+        registry: 520291287938.dkr.ecr.us-east-1.amazonaws.com
+        username: ${{ secrets.GHUB_ACTIONS_KEY_ID }}
+        password: ${{ secrets.GHUB_ACTIONS_ACCESS_KEY }}
+
+    - name: Build and push Docker image
+      run: |
+        docker build -t 520291287938.dkr.ecr.us-east-1.amazonaws.com/devops-profile/tokenapp:$GITHUB_SHA .
+        docker push 520291287938.dkr.ecr.us-east-1.amazonaws.com/devops-profile/tokenapp:$GITHUB_SHA
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.GHUB_ACTIONS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.GHUB_ACTIONS_ACCESS_KEY }}
+        AWS_REGION: 'us-east-1'
