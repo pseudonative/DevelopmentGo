@@ -41,3 +41,4 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.GHUB_ACTIONS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.GHUB_ACTIONS_ACCESS_KEY }}
         AWS_REGION: 'us-east-1'
+        
